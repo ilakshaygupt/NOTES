@@ -2,11 +2,12 @@
 using namespace std;
 #include<iostream>
 #include<vector>
+---------------------------------------------------------------------------------
+----------------------
+NORMAL BINARY SEARCH |
+----------------------
 
-
-NORMAL BINARY search
-
-void binarysearch(int ar[],int n)
+int binarysearch(int ar[],int n)
 {
     int first=0;
     int last=n-1;
@@ -18,8 +19,7 @@ void binarysearch(int ar[],int n)
     {
         if (ar[mid]==key)
         { ans=mid;
-            cout<<ans;
-            break;
+            return ans;
         }
         else if (key>ar[mid])
         {
@@ -31,18 +31,19 @@ void binarysearch(int ar[],int n)
         }
     mid=(first+last)/2;
     }
+    return -1;
 }
 ---------------------------------------------------------------------------------
+---------------------------
+FIRST OCCURENCE OF ELEMENT|
+---------------------------
 
-FIRST OCCURENCE OF ELEMENT
-
-void firstoccurance(int ar[],int n)
+int firstoccurance(int ar[],int n,int key)
 {
 	int first=0;
     int last=n-1;
-    int key;
+
     int mid=first+(last-first)/2;
-    cin >> key;
     int ans=-1;
     while(first<=last)
     {
@@ -62,19 +63,18 @@ void firstoccurance(int ar[],int n)
         }
        mid=(last+first)/2;
        }
-        cout << ans;
+    return ans;
 }
 ---------------------------------------------------------------------------------
+--------------------------
+LAST OCCURENCE OF ELEMENT|
+--------------------------
 
-LAST OCCURENCE OF ELEMENT
-
-void lastoccurance(int ar[],int n)
+int lastoccurance(int ar[],int n,int key)
 {
 	int first=0;
     int last=n-1;
-    int key;
     int mid=first+(last-first)/2;
-    cin >> key;
     int ans=-1;
     while(first<=last)
     {
@@ -94,11 +94,39 @@ void lastoccurance(int ar[],int n)
         }
        mid=(last+first)/2;
        }
-        cout << ans;
+     return ans;
 }
 -------------------------------------------------------------------------------
-LOWEST ELEMENT IN SORTED ROTATED ARRAY
-NO DUPLICATES
+
+-------------------------------
+MISSING NUMBER IN RANGE O TO N|
+-------------------------------
+
+int missingNumber(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        int n=nums.size();
+        int low=0,high=n-1,mid,ans=n;
+        while(low<=high)
+        {
+            mid=(low+high)/2;
+            if(nums[mid]>mid)//peeche jaye
+            {
+                ans=mid;
+                high=mid-1;
+            }
+            else
+                low=mid+1;
+        }
+        return ans;
+    }
+-------------------------------------------------------------------------------
+--------------------------------------
+LOWEST ELEMENT IN SORTED ROTATED ARRAY|
+---------------------------------------
+-------------
+NO DUPLICATES|
+-------------
+
 int findMin(vector<int>& num) {
         int start=0,end=num.size()-1;
         
@@ -114,8 +142,9 @@ int findMin(vector<int>& num) {
         
         return num[start];
     }
-
-DUPLICATES
+----------
+DUPLICATES|
+----------
  int findMin(vector<int>& nums) {
         int l = 0, r = nums.size() - 1;
         while (l < r) {
@@ -132,8 +161,9 @@ DUPLICATES
     }
 ---------------------------------------------------------------------------------
 
-
-PEAK ELEMENT IN A ARRAY
+-----------------------
+PEAK ELEMENT IN A ARRAY|
+-----------------------
 int findPeakElement(const vector<int> &nums) 
     {
 	if(nums.size() == 1) return 0; // single element
@@ -158,82 +188,9 @@ int findPeakElement(const vector<int> &nums)
     }
 
 ---------------------------------------------------------------------------------
-
-
-BREAK IN ASCENDING ORDER IN ROTATED ARRAY
-
-int  break_in_ascending_order_in_rotated_array(int ar[],int n)// ar={2,3,4,6,1}
-{
-	int first=0;
-    int last=n-1;//arr={3,4,5,1,2}
-    int mid=(first+last)/2;
- 
-    while(first<last)
-    {
-    	if (ar[mid]>=ar[0])
-    	{
-    		first=mid+1; 
-    	}
-    	else //then. mid becomes of other monotonic fucntion 
-    	{
-    		last=mid;
-    	}
-    	
- 		mid=(first+last)/2;
-    }
-    return last; 
-}
-
----------------------------------------------------------------------------------
-
-SEARCH IN SORTED ROTATED ARRAY
-
-
-int seachinsortedrotatedarray(int ar[],int n)
-{
-	int first=0;
-    int last=n-1;
-    int key;
-    cin>> key;
-    int mid;
- 	int pivot=break_in_ascending_order_in_rotated_array(ar,n);
- 	int ans=-1;
- 	if (key==ar[pivot])
-    	{
-    		return pivot; 
-    	}
-    else if(key>ar[0])
-    	{
-    		last=pivot-1;
-    	}
-    else if(key<ar[0])
-    	{
-    		first=pivot+1;
-    	}
-    mid=(first+last)/2;	
-    
-    while(first<=last)
-    {
-    	if (key==ar[mid])
-    	{
-    		ans=mid;
-    		return ans; 
-    	}
-    	else if(key>ar[mid])
-    	{
-    		first=mid+1;
-    	}
-    	else
-    	{
-    		last=mid-1;
-    	}
- 		mid=(first+last)/2;
-    }
-    return ans; 
-}
----------------------------------------------------------------------------------
-
-SQUARE ROOT INTEGER PART
+------------------------
+SQUARE ROOT INTEGER PART|
+------------------------
 
 int binary_sqrt_integerpart(int n)//brute force
 {
@@ -248,7 +205,7 @@ int binary_sqrt_integerpart(int n)//brute force
 		{
 			return mid;
 		}
-		if (sqrt<n)
+		else if (sqrt<n)
 		{
 			ans=mid;//for lowest intger whose square<n
 			start=mid+1;
@@ -265,8 +222,9 @@ int binary_sqrt_integerpart(int n)//brute force
 
 ---------------------------------------------------------------------------------
 
-
-SQUARE ROOT FLOAT PART
+----------------------
+SQUARE ROOT FLOAT PART|
+----------------------
 
 double binary_sqrt_floatpart(int n, int precesion, int c)
 {
@@ -284,8 +242,9 @@ double binary_sqrt_floatpart(int n, int precesion, int c)
 }
 ---------------------------------------------------------------------------------
 
-
-SQUARE ROOT IN SINGLE SEARCH
+----------------------------
+SQUARE ROOT IN SINGLE SEARCH|
+----------------------------
 
 double multiply(double number, int n) {
     double ans = 1.0;
@@ -295,7 +254,7 @@ double multiply(double number, int n) {
     return ans; 
 }
 
-void nRoot(int n, int m) {
+void nRoot(int n/*number*/   , int m/*power*/) {
     double low = 1;
     double high = m;
     double eps = 1e-7; 
@@ -310,49 +269,46 @@ void nRoot(int n, int m) {
         }
     }
     
-    cout <<n<<"th root of "<<m<<" is "<<low<<endl; 
-    
-}
-int main() {
-	int n=3, m=27; 
-	getNthRoot(n, m); 
-	return 0;
+    return low;
 }
 
 ---------------------------------------------------------------------------------
-CHECK IF NUMBER IS A PERFECT SQUARE
+-----------------------------------
+CHECK IF NUMBER IS A PERFECT SQUARE|
+-----------------------------------
 
 bool isPerfectSquare(int n) {
-int start=0;
-int last=n;
-long long int mid=(start+last)/2;
-long long int sqrt=mid*mid;
-long long int ans=-1;
-while(start<=last)
-{ 	long long int sqrt=mid*mid;
-	if (sqrt==n)
-	{
-		return 1;
-	}
-	if (sqrt<n)
-	{
-		ans=mid;//for lowest intger whose square<n
-		start=mid+1;
+    int start=0;
+    int last=n;
+    long long int mid=(start+last)/2;
+    long long int sqrt=mid*mid;
+    long long int ans=-1;
+    while(start<=last)
+    { 	long long int sqrt=mid*mid;
+        if (sqrt==n)
+        {
+            return 1;
+        }
+        if (sqrt<n)
+        {
+            ans=mid;//for lowest intger whose square<n
+            start=mid+1;
 
-	}
-	else
-	{
-		last=mid-1;
-	}
-    mid=(start+last)/2;
-}
-return 0;
+        }
+        else
+        {
+            last=mid-1;
+        }
+        mid=(start+last)/2;
+    }
+    return -1;
 }
 
 ---------------------------------------------------------------------------------
 
-
-PYTHAGORAN TRIPLET
+------------------
+PYTHAGORAN TRIPLET|
+------------------
 
 bool issumofsquare() {//bruteforce. double pointer
 	int c;
@@ -380,8 +336,9 @@ return 0;
 
 ---------------------------------------------------------------------------------
 
-
-MEDIAN OF ROW WISE SORTED MATRIX
+--------------------------------
+MEDIAN OF ROW WISE SORTED MATRIX|
+--------------------------------
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -423,37 +380,11 @@ int findMedian(vector<vector<int>> &A)
   }
   return low;
 }
-int main()
-{
-  int row = 3, col = 3;
-  vector<vector<int>> arr = {{1, 3, 8},
-                             {2, 3, 4},
-                             {1, 2, 5}};
-  cout <<"The median of the row-wise sorted matrix is: "<<findMedian(arr)<<endl;
-  return 0;
-}
-
 
 ---------------------------------------------------------------------------------
-void arr()
-{
-    int n;
-    cin >>n;
-    int ar[n];
-    int i=0;
-    while(i<n){
-        cin >> ar[i];
-        i++;
-    } 
- 	
-   cout<< break_in_ascending_order_in_rotated_array(ar,n);
-    
-}
-
-
----------------------------------------------------------------------------------
-
-FIND SINGLE ELEMENT IN ARRAY
+---------------------------------------------------
+FIND SINGLE ELEMENT IN ARRAY IN ARRAY OF DUPLICATES|
+---------------------------------------------------
 
 int findSingleElement(vector < int > & nums) 
 {
@@ -483,10 +414,13 @@ int findSingleElement(vector < int > & nums)
     return nums[low];
 }
 
+
+
 -----------------------------------------------------------------------------
 
-
-SEARCH IN ROTATED ARRAY   DISTINCT VALUES
+---------------------------------------
+SEARCH IN ROTATED ARRAY DISTINCT VALUES|
+---------------------------------------
 int search(vector < int > & nums, int target) {
   int low = 0, high = nums.size() - 1; 
 
@@ -508,13 +442,52 @@ int search(vector < int > & nums, int target) {
             high = mid - 1;
     }
   }
-  return -1; }
+  return -1;
+}
 
+-------------------
+NON DISTINCT VALUES|
+-------------------
+bool search(vector<int>& nums, int target)
+    {
+        int l = 0, h = nums.size() - 1, mid;
+        while(l <= h)
+        {
+            mid = (l + h)/2;
+            if(target == nums[mid])
+                return true;
+            
+            if(nums[l] == nums[mid] and nums[mid] == nums[h])
+            {
+                l++; h--;
+                continue;
+            }
+            
+            if(nums[l] <= nums[mid])               // left is sorted
+            {
+                if(nums[l] <= target and target < nums[mid])
+                    h = mid - 1;
+                else
+                    l = mid + 1;
+            }
+            else                                   // right is sorted
+            {
+                if(nums[mid] < target and target <= nums[h])
+                    l = mid + 1;
+                else
+                    h = mid - 1;
+            }
+        }
+        return false;
+    }
 
 ---------------------------------------------------------------------------------
-MEDIAN OF TWO SORTED ARRAY OF DIFFERENT SIZES
-
-BRUTE
+---------------------------------------------
+MEDIAN OF TWO SORTED ARRAY OF DIFFERENT SIZES|
+---------------------------------------------
+-----
+BRUTE|
+-----
 float median(int nums1[],int nums2[],int m,int n) {
     int finalArray[n+m];
     int i=0,j=0,k=0;
@@ -550,12 +523,13 @@ int main() {
     return 0;
 }
 
-
-BINARY SEARCH
-
-float median(int num 1[],int num2[],int m,int n) {
-    if(m>n)
-        return median(nums2,nums1,n,m);//ensuring that binary search happens on minimum size array
+-------------
+BINARY SEARCH|
+-------------
+ double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m=nums1.size(),n=nums2.size();
+        if(m>n)
+        return findMedianSortedArrays(nums2,nums1);//ensuring that binary search happens on minimum size array
         
     int low=0,high=m,medianPos=((m+n)+1)/2;
     while(low<=high) {
@@ -578,64 +552,42 @@ float median(int num 1[],int num2[],int m,int n) {
     }
     return 0.0;
 }
-
-int main() {
-    int nums1[] = {1,4,7,10,12};
-    int nums2[] = {2,3,6,15};
-    int m = sizeof(nums1)/sizeof(nums1[0]);
-    int n = sizeof(nums2)/sizeof(nums2[0]);
-    cout<<"The Median of two sorted arrays is"<<fixed<<setprecision(5)
-    <<median(nums1,nums2,m,n);
-    return 0;
-}
-
-
-
 ---------------------------------------------------------------------------------
-
-K TH ELEMENT OF TWO SORTE ARRAY
-
-int kthelement(int array1[],int array2[],int m,int n,int k) {
+--------------------------------
+K TH ELEMENT OF TWO SORTED ARRAY|
+--------------------------------
+int kthelement(vector<int> vec1 , vector<int>vec2 ,int k) {
+    int m=vec1.size()-1,n=arr2.size()-1;
     int p1=0,p2=0,counter=0,answer=0;
     
     while(p1<m && p2<n) {
         if(counter == k) break;
-        else if(array1[p1]<array2[p2]) {
-            answer = array1[p1];
+        else if(vec1[p1]<vec2[p2]) {
+            answer = vec1[p1];
             ++p1;
         }
         else {
-            answer = array2[p2];
+            answer = vec2[p2];
             ++p2;
         }
         ++counter;
     }
     if(counter != k) {
         if(p1 != m-1) 
-            answer = array1[k-counter];
+            answer = vec1[k-counter];
         else 
-            answer = array2[k-counter];
+            answer = vec2[k-counter];
     }
     return answer;
 }
 
-int main() {
-    int array1[] = {2,3,6,7,9};
-    int array2[] = {1,4,8,10};
-    int m = sizeof(array1)/sizeof(array1[0]);
-    int n = sizeof(array2)/sizeof(array2[0]);
-    int k = 5;
-    cout<<"The element at the kth position in the final sorted array is "
-    <<kthelement(array1,array2,m,n,k);
-    return 0;
-}
 
 
 BINARY SEARCH LOG O(MIN(M,N))
-
-int kthelement(int arr1[], int arr2[], int m, int n, int k) {
+int kthElement(vector<int> arr1,vector<int> arr2,int m,int n, int k) {
+  
     if(m > n) {
-        return kthelement(arr2, arr1, n, m, k); 
+        return kthElement(arr2, arr1, n, m, k); 
     }
         
     int low = max(0,k-m), high = min(k,n);
@@ -660,18 +612,15 @@ int kthelement(int arr1[], int arr2[], int m, int n, int k) {
     }
     return 1; 
 }
-int main() {
-    int array1[] = {2,3,6,7,9};
-    int array2[] = {1,4,8,10};
-    int m = sizeof(array1)/sizeof(array1[0]);
-    int n = sizeof(array2)/sizeof(array2[0]);
-    int k = 5;
-    cout<<"The element at the kth position in the final sorted array is "
-    <<kthelement(array1,array2,m,n,k);
-    return 0;
-}
+
+
 ---------------------------------------------------------------------------------
-allocate minimum number of pages
+
+
+
+--------------------------------
+ALLOCATE MINIMUM NUMBER OF PAGES|
+--------------------------------
 
 
 //to check if allocation of books among given students is possible.
@@ -679,7 +628,8 @@ int isPossible(vector < int > & A, int pages, int students) {
   int cnt = 0;
   int sumAllocated = 0;
   for (int i = 0; i < A.size(); i++) {
-    if (sumAllocated + A[i] > pages) {//greater than mid
+    if (sumAllocated + A[i] > pages) 
+    {//greater than mid
       cnt++;
       sumAllocated = A[i];
       if (sumAllocated > pages) return false;
@@ -690,7 +640,7 @@ int isPossible(vector < int > & A, int pages, int students) {
   if (cnt < students) return true;
   return false;
 }
-int books(vector < int > & A, int B) {
+int findPages(vector < int > & A,int n, int B) {
   if (B > A.size()) return -1;
   int low = A[0];
   int high = 0;
@@ -710,15 +660,14 @@ int books(vector < int > & A, int B) {
   }
   return low;
 }
-int main() {
-  vector<int> A = {12,34,67,90};
-  int B = 2;
-  cout << "Minimum Possible Number is " << books(A, B);
-  return 0;
-}
+
 ---------------------------------------------------------------------------------
-AGGRESIVE COWS
-brute
+--------------
+AGGRESIVE COWS|
+--------------
+-----
+BRUTE|
+-----
 bool isCompatible(vector < int > inp, int dist, int cows) {
   int n = inp.size();
   int k = inp[0];
@@ -750,7 +699,9 @@ int main() {
 }
 
 
-BS
+-------------
+BINARY SEARCH|
+-------------
 
 bool possible(int mid, vector<int>&stalls,int k)
       {
@@ -759,20 +710,19 @@ bool possible(int mid, vector<int>&stalls,int k)
           {
               if(stalls[i]-temp>=mid)
               {
-                  temp=stalls[i];
-                  count++;
+                temp=stalls[i];
+                count++;
               }
               if(count==k)
               return true;
           }
           return false;
-     
       }
 
-
-      int solve(int n, int k, vector<int> &stalls) {
+int aggressiveCows(vector<int> &stalls, int k)
+{
     
-        
+            int n=stalls.size();
         int  i,j;
         sort(stalls.begin(), stalls.end()) ;// nlog(n)
         // to get the order of placement of the  cows.
@@ -797,9 +747,12 @@ bool possible(int mid, vector<int>&stalls,int k)
             
         }
         return ans;
-    }
+}
+
 ---------------------------------------------------------------------------------
-MINIMUM SIZE SUBARRAY SUM  
+-------------------------
+MINIMUM SIZE SUBARRAY SUM|
+-------------------------  
 Given an array of positive integers nums and a positive integer target, return the minimal length of a 
 subarray
  whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
@@ -833,24 +786,210 @@ subarray
 			return 0;
     }
 ---------------------------------------------------------------------------------
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
----------------------------------------------------------------------------------
+---------------------------------------------
+find the smallest divisor given a threshhold|
+--------------------------------------------
+
+bool check(int mid , vector<int>& nums , int threshold){
+        int sum = 0;
+        int n = nums.size();
+        for(int i = 0 ; i < n ; i++){
+            int val = 0;
+            // if(mid >= nums[i]){
+            //     val = 1;
+            // }
+            // else{
+                // val = ceil((double)nums[i]/(double)mid);
+            // }
+            val = ceil((double)nums[i]/(double)mid);
+            
+            sum += val;
+        }
+        
+        return sum <= threshold;
+    }
+
+
+int smallestDivisor(vector<int>& nums, int threshold) {
+        int lo = 1, // bad
+        hi = 1e9 , // good
+        ans = 0;
+        while(lo <= hi){
+            int mid = lo + (hi - lo) / 2;
+            if(check(mid , nums , threshold)){
+                ans = mid;
+                hi = mid - 1;
+            }
+            else{
+                lo = mid + 1;
+            }
+        }
+        return ans;
+    }
 ---------------------------------------------------------------------------------
 
-int main()
-{
-    int t;
-    t=1;
-    while(t--)
-    {   
-    	arr();
-    //int n;
-	//cin >> n;
-    // cout<<binary_sqrt_floatpart(n,3,binary_sqrt_integerpart(n));  
+-----------------------------------------------
+minimum capacity to ship packages within d days|
+-----------------------------------------------
+
+int shipWithinDays(vector<int>& weights, int days) {
+    int left = -1, right = 0;
+    for (int weight : weights) {
+        left = max(left, weight);
+        right = right + weight;
     }
-    return 0;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        int daysNeeded = 1, currWeight = 0;
+        for (int weight : weights) {
+            if (currWeight + weight > mid) {
+                daysNeeded++;
+                currWeight = 0;
+            }
+            currWeight = currWeight + weight;
+        }
+        if (daysNeeded > days) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
 }
+
+---------------------------------------------------------------------------------
+-----------------------
+split array largest sum|
+-----------------------
+
+Given an integer array nums and an integer k, split nums into k non-empty subarrays such that the largest sum of any subarray is minimized.
+
+Return the minimized largest sum of the split.
+
+A subarray is a contiguous part of the array.
+
+
+int check(vector<int> nums,int mid)
+{
+    int nosubarray=1;
+    int sum=0;
+    for(int i=0;i<nums.size();i++)
+    {   if(sum+nums[i]>mid)
+        {
+        nosubarray++;
+        sum=nums[i];
+        }
+        else
+        {
+        sum+=nums[i];
+        }
+    }
+    return nosubarray;
+}
+
+int splitArray(vector<int>& nums, int k) {
+    int low=*max_element(nums.begin(),nums.end());
+    int high=0;
+    for(int i=0;i<nums.size();i++)high+=nums[i];
+    int ans=high;//ans to be minimized
+    while(low<=high)
+    {
+        int mid=(low+high)/2;
+        if(check(nums,mid)>k)
+        {
+            low=mid+1;   
+        }
+        else
+        {
+            ans=mid;
+            high=mid-1;
+
+        }
+    }
+    return ans;
+}
+
+
+---------------------------------------------------------------------------------
+
+----------------
+DIVIDE CHOCOLATE|
+----------------
+
+#include <bits/stdc++.h> 
+
+
+
+int check(vector<int> &arr,int mid,int k)
+{
+    int sum=0,count=0;
+    for(int i=0;i<arr.size();i++)
+    {sum+=arr[i];
+        if(sum>=mid)
+        {
+            count++;
+           sum=0;
+            
+        }
+
+    }
+    return count>=k;
+}
+int getMaximumSweetness(vector<int> &arr, int k)
+{
+    int low=1;
+    int high=0;
+    for(int i=0;i<arr.size();i++)high+=arr[i];
+    int ans=0;
+    while(low<=high)
+    {int mid=(low+high)/2;
+        if(check(arr,mid,k+1))
+        {
+            ans=mid;
+            low=mid+1;
+
+        }
+        else
+        {
+            high=mid-1;
+        }
+    }
+    return ans;
+}
+
+---------------------------------------------------------------------------------
+--------------------
+koko eating bananas|
+--------------------
+bool check(vector<int>&piles,int h,long long speed)
+    {
+        long long countHours=0;
+        for(auto i:piles)
+        {
+            countHours+=(i+speed-1)/speed;//equivalent to ceil(i/speed)
+        }
+        if(countHours<=h)return true;
+        return false;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int low=1,high=1e9;
+        int ans=-1;
+        while(low<=high)
+        {
+            long long mid=(low+high>>1);//equivalent to (mid+high)/2
+            if(check(piles,h,mid))
+            {
+                ans=mid;
+                high=mid-1;
+            }
+            else low=mid+1;
+        }
+        return ans;
+    }
+---------------------------------------------------------------------------------
+
+                                  ------
+                                  |TODO|
+                                  ------
+
+ ARRAY INTERSECTION BY BINARYS SEARCH
