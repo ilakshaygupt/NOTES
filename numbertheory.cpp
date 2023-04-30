@@ -1,11 +1,4 @@
 
-
-
-
-
-
-
-
 primality test -> test for prime
 
 
@@ -109,7 +102,7 @@ int32_t main()
 
 -----------------------------------------------------------------------------------
 
-find prime  ors of number
+find prime  factors of number
 
 brute
 
