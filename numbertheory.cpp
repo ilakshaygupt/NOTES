@@ -24,11 +24,10 @@ bool isPrime(int n)
     return isPrime(n);
 }
 
+
 better -> all divisors of n occur in pair (a,b) such a*b=n
 
 i.e. one divisor<sqrt(n) and one>sqrt(n)
-
-
 
 bool isPrime(int n)
 {
@@ -162,7 +161,7 @@ binary exponenetiation
 
 calculate a^n in O(logN)
 
- int (int base,int power)
+ int paber(int base,int power)
  {int ans=1;
     for(int i=1;i<=power;i++)
     {
@@ -306,51 +305,83 @@ optimized O(M^3 * log n)
 
 n th number of a recuurence relation
 
-
-
-
-
-
-
 using binet formulae
 cout<<round(pow((1 + sqrt(5)) / 2, n) / sqrt(5));
+
+----------------------------------------------------------------------------
+// matrix exponentation
+any general recursive reln can be represented as 
+		M * currentState = nextState    (M is a matrix , we currently dont know)
+fibbo relation ->  f(n) = f(n-1) + f(n-2)   and f(0)=0 and f(1) = 1 
+so we have f(0) and f(1) [i.e. 2 states] hence M would be of 2 X 2
+
+		| a  b |  *  | f(n-1) |  =  | f(n)  |
+		| c  d |     | f(n-2) |     | f(n-1)|
+
+i.e.       M    *  currentState  =  nextState 
+
+now lets calulate M 
+	
+	a*f(n-1) + b*f(n-2) = f(n)
+	c*f(n-1) + d*f(n-2) = f(n-1)
+	a=1, b=1, c=1, d=0
+	
+	lets calulate for f(2)
+	| 1  1 |  *  | f(1) |  =  | f(2) |
+	| 1  0 |     | f(0) |     | f(1) |
+	
+	lets calulate for f(3)
+	| 1  1 |  *  | f(2) |  =  | f(3) |
+	| 1  0 |     | f(1) |     | f(2) |
+	
+	ie
+	
+	| 1  1 |  *  | 1 1 | * | f(1) |  =  | f(3) |
+	| 1  0 |     | 1 0 |   | f(0) |     | f(2) |
+	
+	ie
+	for general n 
+	M^(n-1) * | f(1) |  =  | f(n)   |
+			  | f(0) |     | f(n-1) |
+			  
+
+    A=|1 1|^n   =|f(n+1) f(n)  |
+      |1 0|      |f(n)   f(n-1)|
+	how to find M^(n-1) ? use  exponentation !
+	
+	let A = M^(n-1) ;
+	
+	then f(n) = A[0][0] * f(1) + A[0][1] * f(0)
+		 f(n) = A[0][0]   //   f(0) = 0 and f(1) = 1 
 
 
 by matrix exponenetiation
 
-using ll = long long;
-
-const ll MOD = 1e9 + 7;
-
-using Matrix = array<array<ll, 2>, 2>;
-
-Matrix mul(Matrix a, Matrix b) {
-	Matrix res = {{{0, 0}, {0, 0}}};
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
-			for (int k = 0; k < 2; k++) {
-				res[i][j] += a[i][k] * b[k][j];
-				res[i][j] %= MOD;
-			}
-		}
-	}
-
-	return res;
-}
-
-int main() {
-	ll n;
-	cin >> n;
-
-	Matrix base = {{{1, 0}, {0, 1}}};
-	Matrix m = {{{1, 1}, {1, 0}}};
-
-	for (; n > 0; n /= 2, m = mul(m, m)) {
-		if (n & 1) base = mul(base, m);
-	}
-
-	cout << base[0][1];
-}
+void multiply(vector<vector<int>> &M ,vector<vector<int>> &A){
+        int M11 = M[0][0] * A[0][0] + M[0][1] * A[1][0];
+        int M12 = M[0][0] * A[0][1] + M[0][1] * A[1][1];
+        int M21 = M[1][0] * A[0][0] + M[1][1] * A[1][0];
+        int M22 = M[1][0] * A[0][1] + M[1][1] * A[1][1];
+        
+        M[0][0] = M11 , M[0][1] =M12 , M[1][0] =M21 , M[1][1] = M22;   
+    }
+    void power(vector<vector<int>> &M , int k){  
+        if(k==0 or k==1)
+            return ;
+        power(M , k/2);
+        multiply(M,M);
+        if(k&1){
+            vector<vector<int> > A {{1,1},{1,0}};
+            multiply(M, A);
+        }
+    }
+public:
+    int fib(int n) {
+       if(n==0) return  0 ;
+        vector<vector<int> > M {{1,1},{1,0}};
+        power(M , n-1);
+        return M[0][0];
+    }
 
 
 
@@ -358,7 +389,7 @@ int main() {
 
 
 gcd by euclid's theorem
-
+        gcd(a,b)=gcd(a-b,b)  a>b
 
 
 int gcd(int a,int b)
@@ -375,6 +406,32 @@ int gcd(int a,int b)
 }
 
 
+    extended euclidean theorem
+
+    ax + by = gcd(a, b)
+    gcd(a, b) = gcd(b%a, a)
+    gcd(b%a, a) = (b%a)x1 + ay1
+    ax + by = (b%a)x1 + ay1
+    ax + by = (b - [b/a] * a)x1 + ay1
+    ax + by = a(y1 - [b/a] * x1) + bx1
+
+    Comparing LHS and RHS,
+    x = y1 - ⌊b/a⌋ * x1
+    y = x1
+
+
+int gcd(int a, int b, int& x, int& y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int x1, y1;
+    int d = gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return d;
+}
 
 
 
