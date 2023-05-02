@@ -911,9 +911,249 @@ int minFallingPathSum(vector<vector<int>>& matrix) {
     }
 
 
+---------------------------------------------------------------------------
+NINJA AND HIS FRIENDS
+
+
+
+      MEMOIZATION
+
+
+      int maxChocoUtil(int i /*0*/, int j1/*0*/, int j2,/*m-1*/ int n, int m, vector < vector < int >> 
+& grid, vector < vector < vector < int >>> & dp) {
+  if (j1 < 0 || j1 >= m || j2 < 0 || j2 >= m)
+    return -1e9;
+
+  if (i == n - 1) {
+    if (j1 == j2)
+      return grid[i][j1];
+    else
+      return grid[i][j1] + grid[i][j2];
+  }
+
+  if (dp[i][j1][j2] != -1)
+    return dp[i][j1][j2];
+
+  int maxi = INT_MIN;
+  for (int di = -1; di <= 1; di++) {
+    for (int dj = -1; dj <= 1; dj++) {
+      int ans;
+      if (j1 == j2)
+        ans = grid[i][j1] + maxChocoUtil(i + 1, j1 + di, j2 + dj, n, m, grid, dp);
+      else
+        ans = grid[i][j1] + grid[i][j2] + maxChocoUtil(i + 1, j1 + di, j2 + dj, n,
+        m, grid, dp);
+      maxi = max(maxi, ans);
+    }
+  }
+  return dp[i][j1][j2] = maxi;
+}
+
+
+
+tabulation
+
+int maximumChocolates(int n, int m, vector < vector < int >> & grid) {
+  // Write your code here.
+  vector < vector < vector < int >>> dp(n, vector < vector < int >> (m, 
+  vector < int > (m, 0)));
+
+  for (int j1 = 0; j1 < m; j1++) {
+    for (int j2 = 0; j2 < m; j2++) {
+      if (j1 == j2)
+        dp[n - 1][j1][j2] = grid[n - 1][j1];
+      else
+        dp[n - 1][j1][j2] = grid[n - 1][j1] + grid[n - 1][j2];
+    }
+  }
+
+  //Outer Nested Loops for travering DP Array
+  for (int i = n - 2; i >= 0; i--) {
+    for (int j1 = 0; j1 < m; j1++) {
+      for (int j2 = 0; j2 < m; j2++) {
+
+        int maxi = INT_MIN;
+
+        //Inner nested loops to try out 9 options
+        for (int di = -1; di <= 1; di++) {
+          for (int dj = -1; dj <= 1; dj++) {
+
+            int ans;
+
+            if (j1 == j2)
+              ans = grid[i][j1];
+            else
+              ans = grid[i][j1] + grid[i][j2];
+
+            if ((j1 + di < 0 || j1 + di >= m) ||
+              (j2 + dj < 0 || j2 + dj >= m))
+
+              ans += -1e9;
+            else
+              ans += dp[i + 1][j1 + di][j2 + dj];
+
+            maxi = max(ans, maxi);
+          }
+        }
+        dp[i][j1][j2] = maxi;
+      }
+    }
+  }
+
+  return dp[0][0][m - 1];
+
+}
 
 
 
 
+space optimizaiton
+int maximumChocolates(int n, int m, vector < vector < int >> & grid) {
+  // Write your code here.
+  vector < vector < int >> front(m, vector < int > (m, 0)), cur(m, vector < int > 
+  (m, 0));
 
+  for (int j1 = 0; j1 < m; j1++) {
+    for (int j2 = 0; j2 < m; j2++) {
+      if (j1 == j2)
+        front[j1][j2] = grid[n - 1][j1];
+      else
+        front[j1][j2] = grid[n - 1][j1] + grid[n - 1][j2];
+    }
+  }
+
+  //Outer Nested Loops for travering DP Array
+  for (int i = n - 2; i >= 0; i--) {
+    for (int j1 = 0; j1 < m; j1++) {
+      for (int j2 = 0; j2 < m; j2++) {
+
+        int maxi = INT_MIN;
+
+        //Inner nested loops to try out 9 options
+        for (int di = -1; di <= 1; di++) {
+          for (int dj = -1; dj <= 1; dj++) {
+
+            int ans;
+
+            if (j1 == j2)
+              ans = grid[i][j1];
+            else
+              ans = grid[i][j1] + grid[i][j2];
+
+            if ((j1 + di < 0 || j1 + di >= m) ||
+              (j2 + dj < 0 || j2 + dj >= m))
+
+              ans += -1e9;
+            else
+              ans += front[j1 + di][j2 + dj];
+
+            maxi = max(ans, maxi);
+
+          }
+        }
+        cur[j1][j2] = maxi;
+      }
+    }
+    front = cur;
+  }
+
+  return front[0][m - 1];
+
+}
+
+
+
+check if subset with sum k exist in Array
+
+
+
+bool subsetSumUtil(int ind, int target, vector<int>& arr, vector<vector<int>> &dp){
+    if(target==0)
+        return true;
+    
+    if(ind == 0)
+        return arr[0] == target;
+    
+    if(dp[ind][target]!=-1)
+        return dp[ind][target];
+        
+    bool notTaken = subsetSumUtil(ind-1,target,arr,dp);
+    
+    bool taken = false;
+    if(arr[ind]<=target)
+        taken = subsetSumUtil(ind-1,target-arr[ind],arr,dp);
+        
+    return dp[ind][target]= notTaken||taken;
+}
+
+
+int main() {
+
+  vector<int> arr = {1,2,3,4};
+  int k=4;
+  int n = arr.size();
+  vector<vector<int>> dp(n,vector<int>(k+1,-1));  
+  if(subsetSumUtil(n-1,k,arr,dp);)
+    cout<<"Subset with given target found";
+  else 
+    cout<<"Subset with given target not found";
+}
+
+tabulation
+
+
+bool subsetSumToK(int n, int k, vector<int> &arr){
+    vector<vector<bool>> dp(n,vector<bool>(k+1,false));
+    //dp[ind][target] i.e for i index if target==0 return true;
+    for(int i=0; i<n; i++){
+        dp[i][0] = true;
+    }
+    
+    if(arr[0]<=k)  
+        dp[0][arr[0]] = true;//ie dp[0][target]==true; at index zero
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target= 1; target<=k; target++){
+            bool notTaken = dp[ind-1][target];
+            bool taken = false;
+                if(arr[ind]<=target)
+                    taken = dp[ind-1][target-arr[ind]];
+        
+            dp[ind][target]= notTaken||taken;
+        }
+    }
+    
+    return dp[n-1][k];
+}
+
+
+ space optimization
+
+
+ bool subsetSumToK(int n, int k, vector<int> &arr){
+    vector<bool> prev(k+1,false);
+    
+    prev[0] = true;//always mark previous state as true
+    if(arr[0]<=k)
+        prev[arr[0]] = true;
+    
+    for(int ind = 1; ind<n; ind++){
+        vector<bool> cur(k+1,false);
+        cur[0] = true;
+        for(int target= 1; target<=k; target++){
+            bool notTaken = prev[target];
+    
+            bool taken = false;
+                if(arr[ind]<=target)
+                    taken = prev[target-arr[ind]];
+        
+            cur[target]= notTaken||taken;
+        }
+        prev = cur;
+    }
+    
+    return prev[k];
+}
+
+partition equal subset sum
 
