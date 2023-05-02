@@ -51,7 +51,7 @@ vector<bool> is_prime(n+1, true);
 is_prime[0] = is_prime[1] = false;
 for (int i = 2; i <= n; i++) {
     if (is_prime[i] && (long long)i * i <= n) {
-        for (int j = i * i; j <= n; j += i)
+        for (int j = 2 * i; j <= n; j += i)
             is_prime[j] = false;
     }
 }
@@ -104,51 +104,72 @@ int32_t main()
 find prime  factors of number
 
 brute
-
-void primeFactors(int n)
-{
-
-    while (n % 2 == 0)//kill all even no i.e. power of two
+void print prime(int n)
+{int count=0;
+    for(int i=1,i<sqrt(1e5);i++)
     {
-        cout << 2 << " ";
-        n = n/2;
-    }
- 
-optimize if n is a composite number there exist t least 1 prime number of n below sqrt(n)
-
-    for (int i = 3; i <= sqrt(n); i = i + 2)
-    {
-   
-        while (n % i == 0)
-        {
-            cout << i << " ";
-            n = n/i;
+        if(n%i==0)
+        {cout<<i<<endl;
+        count++;
+            if(i!=n%i)
+            {
+                cout<<n/i<<endl;
+                count++;
+            }
         }
     }
+    cout<<count;
+}
 
 
-    if (n > 2)
-        cout << n << " ";
+int countPrimeFactors(int n) {
+    vector<int> count(n+1, 0);
+    int ans = 0;
+    for (int i = 2; i <= n; i++) {
+        if (count[i] == 0) {
+            for (int j = i; j <= n; j += i) {
+                count[j]++;
+            }
+        }
+        if (count[i] == 1) {
+            ans++;
+        }
+    }
+    return ans;
+}
+
+int main() {
+    int n = 24;
+    cout << "Number of prime factors of " << n << ": " << countPrimeFactors(n) << endl;
+    return 0;
 }
 
 
 
-void primeFactors(int n)
-{
-    int c=2;
-    while(n>1)
-    {
-        if(n%c==0){
-        cout<<c<<" ";
-        n/=c;
+
+    int num;
+    cin>>num;
+    int i = 0;
+    while (num != 1) {
+        if (num % prime[i] == 0) {
+            cout << prime[i] << " ";
+            num /= prime[i];
         }
-        else c++;
+        else {
+            i++;
+        }
     }
+
+
+int main() {
+    int num;
+    cout << "Enter a positive integer: ";
+    cin >> num;
+    cout << "The prime factors of " << num << " are: ";
+    print_prime_factors(num);
+    cout << endl;
+    return 0;
 }
-
-
-
-
 
 
 
@@ -505,7 +526,7 @@ Fermat’s little theorem is equivalent to the statement that
 
 a^(p-1) ≡ 1 (mod p) 
 OR 
-a^(p-1) % p = 1 
+a^(p-1) % p = 1   al primes 1<=a<=p-1 
 Here a is not divisible by p. 
 
 
