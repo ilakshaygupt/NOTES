@@ -1161,7 +1161,6 @@ bool subsetSumToK(int n, int k, vector<int> &arr){
 partition equal subset sum  -->> extension of subsetSumToK
 
 
-
 bool subsetSumToK(int n, int k, vector<int> &arr){
     vector<vector<bool>> dp(n,vector<bool>(k+1,false));
     //dp[ind][target] i.e for i index if target==0 return true;
@@ -1187,11 +1186,347 @@ bool subsetSumToK(int n, int k, vector<int> &arr){
 
 
 
-bool canpartition(vector<int> &arr,int target)
+bool canPartition(vector<int> &arr)
 {
   int tsum=0;
   for(int i=0;i<arr.size();i++)tsum+=arr[i];
   if(tsum&1)return false;
-  else return (arr.size(),int tsum/2,arr); 
+  else if (arr.size()==1) return false; 
+  else 
+  return subsetSumToK(arr.size()-1, tsum/2,arr); 
 }
 
+Partition Set Into 2 Subsets With Min Absolute Sum Diff
+
+
+memoization
+
+bool subsetSumUtil(int ind, int target, vector < int > & arr, vector < vector 
+< int >> & dp) {
+  if (target == 0)
+    return dp[ind][target]=true;
+
+  if (ind == 0)
+    return dp[ind][target] = arr[0] == target;
+
+  if (dp[ind][target] != -1)
+    return dp[ind][target];
+
+  bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
+
+  bool taken = false;
+  if (arr[ind] <= target)
+    taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
+
+  return dp[ind][target] = notTaken || taken;
+}
+
+int minSubsetSumDifference(vector < int > & arr, int n) {
+
+  int totSum = 0;
+
+  for (int i = 0; i < n; i++) {
+    totSum += arr[i];
+  }
+
+  vector < vector < int >> dp(n, vector < int > (totSum + 1, -1));
+
+  for (int i = 0; i <= totSum; i++) {
+    bool dummy = subsetSumUtil(n - 1, i, arr, dp);
+  }
+
+  int mini = 1e9;
+  for (int i = 0; i <= totSum; i++) {
+    if (dp[n - 1][i] == true) {
+      int diff = abs(i - (totSum - i));
+      mini = min(mini, diff);
+    }
+  }
+  return mini;
+
+}
+
+space optimizaiton
+
+int minSubsetSumDifference(vector < int > & arr, int n) {
+  int totSum = 0;
+
+  for (int i = 0; i < n; i++) {
+    totSum += arr[i];
+  }
+
+  vector < bool > prev(totSum + 1, false);
+
+  prev[0] = true;
+
+  if (arr[0] <= totSum)
+    prev[arr[0]] = true;
+
+  for (int ind = 1; ind < n; ind++) {
+    vector < bool > cur(totSum + 1, false);
+    cur[0] = true;
+    for (int target = 1; target <= totSum; target++) {
+      bool notTaken = prev[target];
+
+      bool taken = false;
+      if (arr[ind] <= target)
+        taken = prev[target - arr[ind]];
+
+      cur[target] = notTaken || taken;
+    }
+    prev = cur;
+  }
+
+  int mini = 1e9;
+  for (int i = 0; i <= totSum; i++) {
+    if (prev[i] == true) {
+      int diff = abs(i - (totSum - i));
+      mini = min(mini, diff);
+    }
+  }
+  return mini;
+}
+
+-------------------------------------------------------------------------------------------
+count subsequence with sum k
+
+
+
+memoization
+
+int findWaysUtil(int ind, int target, vector<int>& arr, vector<vector<int>> &dp){
+
+    if(ind == 0){
+            if(target==0 && arr[0]==0)
+                return 2;
+            if(target==0 || target == arr[0])//for zero element
+                return 1;
+            return 0;
+    }
+    
+    if(dp[ind][target]!=-1)
+        return dp[ind][target];
+        
+    int notTaken = findWaysUtil(ind-1,target,arr,dp);
+    
+    int taken = 0;
+    if(arr[ind]<=target)
+        taken = findWaysUtil(ind-1,target-arr[ind],arr,dp);
+        
+    return dp[ind][target]= notTaken + taken;
+}
+
+int findWays(vector<int> &num, int k){
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(k+1,-1));
+    return findWaysUtil(n-1,k,num,dp);
+}
+
+tabulation
+
+int findWays(vector<int> &num, int k){
+     int n = num.size();
+
+    vector<vector<int>> dp(n,vector<int>(k+1,0));
+    
+    for(int i=0; i<n; i++){
+        dp[i][0] = 1;
+    }
+    
+    if(num[0]<=k)
+        dp[0][num[0]] = 1;
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target= 1; target<=k; target++){
+            
+            int notTaken = dp[ind-1][target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = dp[ind-1][target-num[ind]];
+        
+            dp[ind][target]= notTaken + taken;
+        }
+    }
+    
+    return dp[n-1][k];
+    
+}
+
+
+space optimizaiton
+int findWays(vector<int> &num, int k){
+    int n = num.size();
+
+    vector<int> prev(k+1,0);
+    
+    prev[0] =1;
+    
+    if(num[0]<=k)
+        prev[num[0]] = 1;
+    
+    for(int ind = 1; ind<n; ind++){
+        vector<int> cur(k+1,0);
+        cur[0]=1;
+        for(int target= 1; target<=k; target++){
+            
+            int notTaken = prev[target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = prev[target-num[ind]];
+        
+            cur[target]= notTaken + taken;
+        }
+        
+        prev = cur;
+    }
+    
+    return prev[k];
+
+    
+}
+
+
+
+count partition with given difference
+
+
+
+
+tabulation
+
+int countPartitionsUtil(int ind, int target, vector<int>& arr, vector<vector
+<int>> &dp){
+
+     if(ind == 0){
+        if(target==0 && arr[0]==0)
+            return 2;
+        if(target==0 || target == arr[0])
+            return 1;
+        return 0;
+    }
+    
+    if(dp[ind][target]!=-1)
+        return dp[ind][target];
+        
+    int notTaken = countPartitionsUtil(ind-1,target,arr,dp);
+    
+    int taken = 0;
+    if(arr[ind]<=target)
+        taken = countPartitionsUtil(ind-1,target-arr[ind],arr,dp);
+        
+    return dp[ind][target]= (notTaken + taken)%mod;
+}
+
+int countPartitions(int d, vector<int>& arr){
+    int n = arr.size();
+    int totSum = 0;
+    for(int i=0; i<arr.size();i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-d<0) return 0;
+    if((totSum-d)%2==1) return 0;
+    
+    int s2 = (totSum-d)/2;
+    
+    vector<vector<int>> dp(n,vector<int>(s2+1,-1));
+    return countPartitionsUtil(n-1,s2,arr,dp);
+}
+
+
+
+tabulation
+
+
+int mod =(int)1e9+7;
+
+int findWays(vector<int> &num, int tar){
+     int n = num.size();
+
+    vector<vector<int>> dp(n,vector<int>(tar+1,0));
+    
+    if(num[0] == 0) dp[0][0] =2;  // 2 cases -pick and not pick
+    else dp[0][0] = 1;  // 1 case - not pick
+    
+    if(num[0]!=0 && num[0]<=tar) dp[0][num[0]] = 1;  // 1 case -pick
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target= 0; target<=tar; target++){
+            
+            int notTaken = dp[ind-1][target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = dp[ind-1][target-num[ind]];
+        
+            dp[ind][target]= (notTaken + taken)%mod;
+        }
+    }
+    return dp[n-1][tar];
+}
+
+int countPartitions(int n, int d, vector<int>& arr){
+    int totSum = 0;
+    for(int i=0; i<n;i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-d <0 || (totSum-d)%2 ) return 0;
+    
+    return findWays(arr,(totSum-d)/2);
+}
+  
+
+
+  space optimization
+
+
+int mod =(int)1e9+7;
+
+int findWays(vector<int> &num, int tar){
+     int n = num.size();
+
+    vector<int> prev(tar+1,0);
+    
+    if(num[0] == 0) prev[0] =2;  // 2 cases -pick and not pick
+    else prev[0] = 1;  // 1 case - not pick
+    
+    if(num[0]!=0 && num[0]<=tar) prev[num[0]] = 1;  // 1 case -pick
+    
+    for(int ind = 1; ind<n; ind++){
+        vector<int> cur(tar+1,0);
+        for(int target= 0; target<=tar; target++){
+            int notTaken = prev[target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = prev[target-num[ind]];
+        
+            cur[target]= (notTaken + taken)%mod;
+        }
+        prev = cur;
+    }
+    return prev[tar];
+}
+
+int countPartitions(int n, int d, vector<int>& arr){
+    int totSum = 0;
+    for(int i=0; i<n;i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-d <0 || (totSum-d)%2 ) return 0;
+    
+    return findWays(arr,(totSum-d)/2);
+}
+  
+
+
+  0/1 KNAPSACK
+
+  
