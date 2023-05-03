@@ -1155,5 +1155,40 @@ bool subsetSumToK(int n, int k, vector<int> &arr){
     return prev[k];
 }
 
-partition equal subset sum
+partition equal subset sum  -->> extension of subsetSumToK
+
+
+
+bool subsetSumToK(int n, int k, vector<int> &arr){
+    vector<vector<bool>> dp(n,vector<bool>(k+1,false));
+    //dp[ind][target] i.e for i index if target==0 return true;
+    for(int i=0; i<n; i++){
+        dp[i][0] = true;
+    }
+    if(arr[0]<=k)  
+        dp[0][arr[0]] = true;//ie dp[0][target]==true; at index zero
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target= 1; target<=k; target++){
+            bool notTaken = dp[ind-1][target];
+            bool taken = false;
+                if(arr[ind]<=target)
+                    taken = dp[ind-1][target-arr[ind]];
+        
+            dp[ind][target]= notTaken||taken;
+        }
+    }
+    
+    return dp[n-1][k];
+}
+
+
+
+bool canpartition(vector<int> &arr,int target)
+{
+  int tsum=0;
+  for(int i=0;i<arr.size();i++)tsum+=arr[i];
+  if(tsum&1)return false;
+  else return (arr.size(),int tsum/2,arr); 
+}
 
