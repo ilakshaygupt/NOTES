@@ -243,6 +243,7 @@ int main() {
 ---------------------------------------------------------------------
 
  max sum of non adjacent elements
+
  int solveUtil(int ind, vector<int>& arr, vector<int>& dp){
     
     if(dp[ind]!=-1) return dp[ind];
@@ -270,7 +271,7 @@ int main() {
 
 }
 
-MEMEOZITAION
+MEMEOIZATION
 
 int solveUtil(int n, vector<int>& arr, vector<int>& dp){
     
@@ -304,7 +305,7 @@ int main() {
 }
 SPACE optimization
 
-nt solve(int n, vector<int>& arr){
+int solve(int n, vector<int>& arr){
     int prev = arr[0];
     int prev2 =0;
     
@@ -388,7 +389,9 @@ int main() {
 NINJA TRAINING
 
 
-MEMEOZITAION
+MEMEOIZATION
+
+
 int f(int day, int last, vector<vector<int>> &points,vector<vector<int>> &dp) {
 
   if (dp[day][last] != -1) return dp[day][last];
