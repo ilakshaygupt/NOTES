@@ -1529,4 +1529,351 @@ int countPartitions(int n, int d, vector<int>& arr){
 
   0/1 KNAPSACK
 
+recursion
+
+int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        if(wt[0] <=W) return val[0];
+        else return 0;
+    }
+    
+    if(dp[ind][W]!=-1)
+        return dp[ind][W];
+        
+    int notTaken = 0 + knapsackUtil(wt,val,ind-1,W,dp);
+    
+    int taken = INT_MIN;
+    if(wt[ind] <= W)
+        taken = val[ind] + knapsackUtil(wt,val,ind-1,W-wt[ind],dp);
+        
+    return dp[ind][W] = max(notTaken,taken);
+}
+
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W){
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,-1));
+    return knapsackUtil(wt, val, n-1, W, dp);
+}
+
+
+tabulation
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W){
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,0));
+    
+    //Base Condition
+    
+    for(int i=wt[0]; i<=W; i++){
+        dp[0][i] = val[0];
+    }
+    
+    for(int ind =1; ind<n; ind++){
+        for(int cap=0; cap<=W; cap++){
+            
+            int notTaken = 0 + dp[ind-1][cap];
+            
+            int taken = INT_MIN;
+            if(wt[ind] <= cap)
+                taken = val[ind] + dp[ind-1][cap - wt[ind]];
+                
+            dp[ind][cap] = max(notTaken, taken);
+        }
+    }
+    
+    return dp[n-1][W];
+}
+
+
+space optimization
+
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W){
+    
+    vector<int> prev(W+1,0);
+    
+    //Base Condition
+    
+    for(int i=wt[0]; i<=W; i++){
+        prev[i] = val[0];
+    }
+    
+    for(int ind =1; ind<n; ind++){
+        for(int cap=W; cap>=0; cap--){
+            
+            int notTaken = 0 + prev[cap];
+            
+            int taken = INT_MIN;
+            if(wt[ind] <= cap)
+                taken = val[ind] + prev[cap - wt[ind]];
+                
+            prev[cap] = max(notTaken, taken);
+        }
+    }
+    
+    return prev[W];
+}
+
+
+MINIMUM COINS   /INFINITE SUPPLIES PATTERN
+
+int minimumElementsUtil(vector<int>& arr, int ind, int T, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        if(T%arr[0] == 0) return T/arr[0];
+        else return 1e9;
+    }
+    
+    if(dp[ind][T]!=-1)
+        return dp[ind][T];
+        
+    int notTaken = 0 + minimumElementsUtil(arr,ind-1,T,dp);
+    
+    int taken = 1e9;
+    if(arr[ind] <= T)
+        taken = 1 + minimumElementsUtil(arr,ind,T-arr[ind],dp);
+        
+    return dp[ind][T] = min(notTaken,taken);
+}
+
+
+int minimumElements(vector<int>& arr, int T){
+    
+    int n= arr.size();
+    
+    vector<vector<int>> dp(n,vector<int>(T+1,-1));
+    int ans =  minimumElementsUtil(arr, n-1, T, dp);
+    if(ans >= 1e9) return -1;
+    return ans;
+}   
+
+tabulation
+
+
+int minimumElements(vector<int>& arr, int T){
+    
+    int n= arr.size();
+    
+    vector<vector<int>> dp(n,vector<int>(T+1,0));
+    
+    for(int i=0; i<=T; i++){
+        if(i%arr[0] == 0)  
+            dp[0][i] = i/arr[0];
+        else dp[0][i] = 1e9;
+    }
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target<=T; target++){
+            
+            int notTake = 0 + dp[ind-1][target];
+            int take = 1e9;
+            if(arr[ind]<=target)
+                take = 1 + dp[ind][target - arr[ind]];
+                
+             dp[ind][target] = min(notTake, take);
+        }
+    }
+    
+    int ans = dp[n-1][T];
+    if(ans >=1e9) return -1;
+    return ans;
+}
+
+
+
+space optimizaiton
+
+int minimumElements(vector<int>& arr, int T){
+    
+    int n= arr.size();
+    
+    vector<int> prev(T+1,0), cur(T+1,0);
+    
+    for(int i=0; i<=T; i++){
+        if(i%arr[0] == 0)  
+            prev[i] = i/arr[0];
+        else prev[i] = 1e9;
+    }
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target<=T; target++){
+            
+            int notTake = 0 + prev[target];
+            int take = 1e9;
+            if(arr[ind]<=target)
+                take = 1 + cur[target - arr[ind]];
+                
+             cur[target] = min(notTake, take);
+        }
+        prev = cur;
+    }
+    
+    int ans = prev[T];
+    if(ans >=1e9) return -1;
+    return ans;
+}
+
+
+
+
+TARGET SUM
+
+  MEMOIZATION
+
+  int countPartitionsUtil(int ind, int target, vector<int>& arr, vector<vector<int>> 
+&dp){
+
+     if(ind == 0){
+        if(target==0 && arr[0]==0)
+            return 2;
+        if(target==0 || target == arr[0])
+            return 1;
+        return 0;
+    }
+    
+    if(dp[ind][target]!=-1)
+        return dp[ind][target];
+        
+    int notTaken = countPartitionsUtil(ind-1,target,arr,dp);
+    
+    int taken = 0;
+    if(arr[ind]<=target)
+        taken = countPartitionsUtil(ind-1,target-arr[ind],arr,dp);
+        
+    return dp[ind][target]= (notTaken + taken);
+}
+
+int targetSum(int n,int target, vector<int>& arr){
+    int totSum = 0;
+    for(int i=0; i<arr.size();i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-target<0) return 0;
+    if((totSum-target)%2==1) return 0;
+    
+    int s2 = (totSum-target)/2;
+    
+    vector<vector<int>> dp(n,vector<int>(s2+1,-1));
+    return countPartitionsUtil(n-1,s2,arr,dp);
+}
+
+
+
+tabulation
+
+
+int findWays(vector<int> &num, int tar){
+     int n = num.size();
+
+    vector<vector<int>> dp(n,vector<int>(tar+1,0));
+    
+    if(num[0] == 0) dp[0][0] =2;  // 2 cases -pick and not pick
+    else dp[0][0] = 1;  // 1 case - not pick
+    
+    if(num[0]!=0 && num[0]<=tar) dp[0][num[0]] = 1;  // 1 case -pick
+    
+    for(int ind = 1; ind<n; ind++){
+        for(int target= 0; target<=tar; target++){
+            
+            int notTaken = dp[ind-1][target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = dp[ind-1][target-num[ind]];
+        
+            dp[ind][target]= (notTaken + taken)%mod;
+        }
+    }
+    return dp[n-1][tar];
+}
+
+int targetSum(int n, int target, vector<int>& arr){
+    int totSum = 0;
+    for(int i=0; i<n;i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-target <0 || (totSum-target)%2 ) return 0;
+    
+    return findWays(arr,(totSum-target)/2);
+}
   
+space optimization
+
+
+
+int findWays(vector<int> &num, int tar){
+     int n = num.size();
+
+    vector<int> prev(tar+1,0);
+    
+    if(num[0] == 0) prev[0] =2;  // 2 cases -pick and not pick
+    else prev[0] = 1;  // 1 case - not pick
+    
+    if(num[0]!=0 && num[0]<=tar) prev[num[0]] = 1;  // 1 case -pick
+    
+    for(int ind = 1; ind<n; ind++){
+        vector<int> cur(tar+1,0);
+        for(int target= 0; target<=tar; target++){
+            int notTaken = prev[target];
+    
+            int taken = 0;
+                if(num[ind]<=target)
+                    taken = prev[target-num[ind]];
+        
+            cur[target]= (notTaken + taken)%mod;
+        }
+        prev = cur;
+    }
+    return prev[tar];
+}
+
+int targetSum(int n, int target, vector<int>& arr){
+    int totSum = 0;
+    for(int i=0; i<n;i++){
+        totSum += arr[i];
+    }
+    
+    //Checking for edge cases
+    if(totSum-target <0 || (totSum-target)%2 ) return 0;
+    
+    return findWays(arr,(totSum-target)/2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
