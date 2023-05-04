@@ -1064,7 +1064,7 @@ int maximumChocolates(int n, int m, vector < vector < int >> & grid) {
 
 }
 
-
+------------------------------------------------------------------------------------------------
 
 check if subset with sum k exist in Array
 
@@ -1845,9 +1845,279 @@ int targetSum(int n, int target, vector<int>& arr){
     return findWays(arr,(totSum-target)/2);
 }
 
+COIN CHANGE 2 / WAYS TO MAKE A COIN CHANGE 2  / ANY ELEMENT CAN BE  USED ANU NUMBER OF TIMES
+
+memoization
+long countWaysToMakeChangeUtil(vector<int>& arr,int ind, int T, vector<vector<long
+>>& dp){
+
+    if(ind == 0){
+        return (T%arr[0]==0);
+    }
+    
+    if(dp[ind][T]!=-1)
+        return dp[ind][T];
+        
+    long notTaken = countWaysToMakeChangeUtil(arr,ind-1,T,dp);
+    
+    long taken = 0;
+    if(arr[ind] <= T)
+        taken = countWaysToMakeChangeUtil(arr,ind,T-arr[ind],dp);
+        
+    return dp[ind][T] = notTaken + taken;
+}
+
+
+long countWaysToMakeChange(vector<int>& arr, int n, int T){
+    
+    vector<vector<long>> dp(n,vector<long>(T+1,-1));
+    return countWaysToMakeChangeUtil(arr,n-1, T, dp);
+}
+
+tabulation
+long countWaysToMakeChange(vector<int>& arr, int n, int T){
+    
+    vector<vector<long>> dp(n,vector<long>(T+1,0));
+    
+    
+    //Initializing base condition
+    for(int i=0;i<=T;i++){
+        if(i%arr[0]==0)
+            dp[0][i]=1;
+        // Else condition is automatically fulfilled,
+        // as dp array is initialized to zero
+    }
+    
+    for(int ind=1; ind<n;ind++){
+        for(int target=0;target<=T;target++){
+            long notTaken = dp[ind-1][target];
+            
+            long taken = 0;
+            if(arr[ind]<=target)
+                taken = dp[ind][target-arr[ind]];
+                
+            dp[ind][target] = notTaken + taken;
+        }
+    }
+    
+    return dp[n-1][T];
+}
 
 
 
+space optimizaiton
+
+long countWaysToMakeChange(vector<int>& arr, int n, int T){
+    
+    vector<long> prev(T+1,0);
+    
+    
+    //Initializing base condition
+    for(int i=0;i<=T;i++){
+        if(i%arr[0]==0)
+            prev[i]=1;
+        // Else condition is automatically fulfilled,
+        // as prev array is initialized to zero
+    }
+    
+    for(int ind=1; ind<n;ind++){
+        vector<long> cur(T+1,0);
+        for(int target=0;target<=T;target++){
+            long notTaken = prev[target];
+            
+            long taken = 0;
+            if(arr[ind]<=target)
+                taken = cur[target-arr[ind]];
+                
+            cur[target] = notTaken + taken;
+        }
+        prev = cur;
+    }
+    
+    return prev[T];
+}
+
+
+
+
+unbounded knapsack / infinite supply of every item /item can be picked infintie TIMES
+
+    memoization
+
+    int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector
+<int>>& dp){
+
+    if(ind == 0){
+        return ((int)(W/wt[0])) * val[0];
+    }
+    
+    if(dp[ind][W]!=-1)
+        return dp[ind][W];
+        
+    int notTaken = 0 + knapsackUtil(wt,val,ind-1,W,dp);
+    
+    int taken = INT_MIN;
+    if(wt[ind] <= W)
+        taken = val[ind] + knapsackUtil(wt,val,ind,W-wt[ind],dp);
+        
+    return dp[ind][W] = max(notTaken,taken);
+}
+
+
+int unboundedKnapsack(int n, int W, vector<int>& val,vector<int>& wt) {
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,-1));
+    return knapsackUtil(wt, val, n-1, W, dp);
+}
+
+
+
+tabulation
+
+int unboundedKnapsack(int n, int W, vector<int>& val,vector<int>& wt) {
+    
+    vector<vector<int>> dp(n,vector<int>(W+1,0));
+    
+    //Base Condition
+    
+    for(int i=wt[0]; i<=W; i++){
+        dp[0][i] = ((int) i/wt[0]) * val[0];
+    }
+    
+    for(int ind =1; ind<n; ind++){
+        for(int cap=0; cap<=W; cap++){
+            
+            int notTaken = 0 + dp[ind-1][cap];
+            
+            int taken = INT_MIN;
+            if(wt[ind] <= cap)
+                taken = val[ind] + dp[ind][cap - wt[ind]];
+                
+            dp[ind][cap] = max(notTaken, taken);
+        }
+    }
+    
+    return dp[n-1][W];
+}
+
+space optimizaiton
+
+int unboundedKnapsack(int n, int W, vector<int>& val,vector<int>& wt) {
+    
+    vector<int> cur(W+1,0);
+    
+    //Base Condition
+    
+    for(int i=wt[0]; i<=W; i++){
+        cur[i] = ((int)i/wt[0]) * val[0];
+    }
+    
+    for(int ind =1; ind<n; ind++){
+        for(int cap=0; cap<=W; cap++){
+            
+            int notTaken = cur[cap];
+            
+            int taken = INT_MIN;
+            if(wt[ind] <= cap)
+                taken = val[ind] + cur[cap - wt[ind]];
+                
+            cur[cap] = max(notTaken, taken);
+        }
+    }
+    
+    return cur[W];
+
+}
+
+rod cutting problem
+
+MEMEOIZATION
+int cutRodUtil(vector<int>& price, int ind, int N, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        return N*price[0];
+    }
+    
+    if(dp[ind][N]!=-1)
+        return dp[ind][N];
+        
+    int notTaken = 0 + cutRodUtil(price,ind-1,N,dp);
+    
+    int taken = INT_MIN;
+    int rodLength = ind+1;
+    if(rodLength <= N)
+        taken = price[ind] + cutRodUtil(price,ind,N-rodLength,dp);
+        
+    return dp[ind][N] = max(notTaken,taken);
+}
+
+
+int cutRod(vector<int>& price,int N) {
+
+    vector<vector<int>> dp(N,vector<int>(N+1,-1));
+    return cutRodUtil(price,N-1,N,dp);
+}
+tabulation
+
+int cutRod(vector<int>& price,int N) {
+
+    vector<vector<int>> dp(N,vector<int>(N+1,-1));
+    
+    for(int i=0; i<=N; i++){
+        dp[0][i] = i*price[0];
+    }
+    
+    for(int ind=1; ind<N; ind++){
+        for(int length =0; length<=N; length++){
+        
+             int notTaken = 0 + dp[ind-1][length];
+    
+             int taken = INT_MIN;
+             int rodLength = ind+1;
+             if(rodLength <= length)
+                taken = price[ind] + dp[ind][length-rodLength];
+        
+             dp[ind][length] = max(notTaken,taken);   
+        }
+    }
+    
+    return dp[N-1][N];
+}
+
+
+
+space optimizaiton
+
+
+
+int cutRod(vector<int>& price,int N) {
+
+    vector<int> cur (N+1,0);
+    
+    for(int i=0; i<=N; i++){
+        cur[i] = i*price[0];
+    }
+    
+    for(int ind=1; ind<N; ind++){
+        for(int length =0; length<=N; length++){
+        
+             int notTaken = 0 + cur[length];
+    
+             int taken = INT_MIN;
+             int rodLength = ind+1;
+             if(rodLength <= length)
+                taken = price[ind] + cur[length-rodLength];
+        
+             cur[length] = max(notTaken,taken);   
+        }
+    }
+    
+    return cur[N];
+}
+
+
+------------------------------------------------------------------------------------------------
+  DP ON STRINGS
 
 
 
