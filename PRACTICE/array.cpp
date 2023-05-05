@@ -826,3 +826,8 @@ string twoSum(int n, vector<int> &arr, int target) {
 
 
 SORT ARRAY OF 0 1 AND 2
+
+
+
+
+
