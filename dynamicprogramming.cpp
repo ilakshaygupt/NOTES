@@ -758,6 +758,47 @@ int main() {
   cout<<minSumPath(n,m,matrix);
 }
 -------------------------------------------------------------------------------------
+maximum path sum with obstacle
+
+int f(int i, int j) {
+    if (i < 0 || i >= n || j < 0 || j >= m || a[i][j] == 0 || visited[i][j]) {
+        return 0;
+    }
+    visited[i][j] = true;
+    int total_visited_breadth = a[i][j];
+    total_visited_breadth += f(i+1, j);
+    total_visited_breadth += f(i-1, j);
+    total_visited_breadth += f(i, j+1);
+    total_visited_breadth += f(i, j-1);
+    return total_visited_breadth;
+}
+
+
+int main() {
+   
+        cin >> n >> m;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> a[i][j];
+                visited[i][j] = false;
+            }
+        }
+        int max_total_visited_breadth = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (a[i][j] > 0 && !visited[i][j]) {
+                    max_total_visited_breadth = max(max_total_visited_breadth, f(i, j));
+                }
+            }
+        }
+        cout << max_total_visited_breadth << endl;
+    
+    return 0;
+}
+
+
+
+--------------------------------------------------------------------------------------
 
 triangular path having fixed starting point and variable ending point
 
