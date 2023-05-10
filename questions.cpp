@@ -11,7 +11,22 @@ BIT MAGIC
 --------------------------------------------------------------------------------------
 {3}
 RECURSION
-
+    SORT A STACK USING RECURSION
+    REVERSE A STACK USIGN RECURSION
+    SUBSEQUENCES USING RECURSION
+    ALL SUBSEQUENCES WITH SUM EQUALS TO k
+    SINGLE SUBSEQUENCES WITH SUM EQUAL TO k
+    COUNT THE NUMBER OF SUBSEQUENCES WITH SUM k
+    subsequences with sum equal target and a element can be use any number of timecombinations must be unique-->> Two combinations are unique if the frequency of at least one of the chosen numbers is different.
+    subsequences with sum equal target and a element can be used ponly once combinations must be unique-->> Two combinations are unique if the frequency of at least one of the chosen numbers is different.
+    return sum of all posssible subsets of array in increasng order
+    RETURN ALL UNIQUE subsets
+    ALL permutations OF STRING GIVEN THAT ALL ELEMENT ARE DISTINCT
+    N-QUEENS Arrangement
+    SUDOKU solver
+    PALINDROME PARTITIONING
+    RAT IN A maze
+    
 --------------------------------------------------------------------------------------
 {4}
 ARRAYS
