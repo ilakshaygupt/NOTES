@@ -3422,10 +3422,342 @@ int maximumProfit(int n, int fee, vector<int>& Arr)
 
 }
 
+longest increasing subsequence
+
+MEMEOIZATION
+
+int getAns(int arr[], int n,  int ind, int prev_index, vector<vector<int>>& dp){
+    
+    // base condition
+    if(ind == n)
+        return 0;
+        
+    if(dp[ind][prev_index+1]!=-1)
+        return dp[ind][prev_index+1];
+    
+    int notTake = 0 + getAns(arr,n,ind+1,prev_index,dp);
+    
+    int take = 0;
+    
+    if(prev_index == -1 || arr[ind] > arr[prev_index]){
+        take = 1 + getAns(arr,n,ind+1,ind,dp);
+    }
+    
+    return dp[ind][prev_index+1] = max(notTake,take);
+}
+
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<vector<int>> dp(n,vector<int>(n+1,-1));
+    
+    return getAns(arr,n,0,-1,dp);
+}
+
+tabulation
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+    
+    for(int ind = n-1; ind>=0; ind --){
+        for (int prev_index = ind-1; prev_index >=-1; prev_index --){
+            
+            int notTake = 0 + dp[ind+1][prev_index +1];
+    
+            int take = 0;
+    
+            if(prev_index == -1 || arr[ind] > arr[prev_index]){
+                
+                take = 1 + dp[ind+1][ind+1];
+            }
+    
+            dp[ind][prev_index+1] = max(notTake,take);
+            
+        }
+    }
+    
+    return dp[0][0];
+}
+
+
+
+SPACE optimizaiton
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<int> next(n+1,0);
+    
+    vector<int> cur(n+1,0);
+    
+    for(int ind = n-1; ind>=0; ind --){
+        for (int prev_index = ind-1; prev_index >=-1; prev_index --){
+            
+            int notTake = 0 + next[prev_index +1];
+    
+            int take = 0;
+    
+            if(prev_index == -1 || arr[ind] > arr[prev_index]){
+                
+                take = 1 + next[ind+1];
+            }
+    
+            cur[prev_index+1] = max(notTake,take);
+        }
+        next = cur;
+    }
+    
+    return cur[0];
+}
+
+
+tabulation
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<int> dp(n,1);
+    
+    for(int i=0; i<=n-1; i++){
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            
+            if(arr[prev_index]<arr[i]){
+                dp[i] = max(dp[i], 1 + dp[prev_index]);
+            }
+        }
+    }
+    
+    int ans = -1;
+    
+    for(int i=0; i<=n-1; i++){
+        ans = max(ans, dp[i]);
+    }
+    
+    return ans;
+}
+
+printing longestIncreasingSubsequence
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<int> dp(n,1);
+    vector<int> hash(n,1);
+    
+    for(int i=0; i<=n-1; i++){
+        
+        hash[i] = i; // initializing with current index
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            
+            if(arr[prev_index]<arr[i] && 1 + dp[prev_index] > dp[i]){
+                dp[i] = 1 + dp[prev_index];
+                hash[i] = prev_index;
+            }
+        }
+    }
+    
+    int ans = -1;
+    int lastIndex =-1;
+    
+    for(int i=0; i<=n-1; i++){
+        if(dp[i]> ans){
+            ans = dp[i];
+            lastIndex = i;
+        }
+    }
+    
+    vector<int> temp;
+    temp.push_back(arr[lastIndex]);
+    
+    while(hash[lastIndex] != lastIndex){ // till not reach the initialization value
+        lastIndex = hash[lastIndex];
+        temp.push_back(arr[lastIndex]);    
+    }
+    
+    // reverse the array 
+    reverse(temp.begin(),temp.end());
+    
+    // cout<<"The subsequence elements are ";
+    
+    for(int i=0; i<temp.size(); i++){
+        cout<<temp[i]<<" ";
+    }
+    cout<<endl;
+    
+    return ans;
+}
+
+
+binary search
+
+
+int longestIncreasingSubsequence(int arr[], int n){
+    
+    vector<int> temp;
+    temp.push_back(arr[0]);
+    
+    int len = 1;
+    
+    for(int i=1; i<n; i++){
+        if(arr[i]>temp.back()){
+           // arr[i] > the last element of temp array 
+           
+           temp.push_back(arr[i]);
+           len++;
+           
+        } 
+        else{
+	// replacement step
+            int ind = lower_bound(temp.begin(),temp.end(),arr[i]) - temp.begin();
+            temp[ind] = arr[i];
+        }
+        
+    }
+    
+    return len;
+}
+    
 
 
 
 
+
+largest divisible subset
+
+vector<int> divisibleSet(vector<int>& arr){
+
+    int n = arr.size();
+    
+    //sort the array
+    
+    sort(arr.begin(), arr.end());
+
+    vector<int> dp(n,1);
+    vector<int> hash(n,1);
+    
+    for(int i=0; i<=n-1; i++){
+        
+        hash[i] = i; // initializing with current index
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            
+            if(arr[i]%arr[prev_index] == 0 && 1 + dp[prev_index] > dp[i]){
+                dp[i] = 1 + dp[prev_index];
+                hash[i] = prev_index;
+            }
+        }
+    }
+    
+    int ans = -1;
+    int lastIndex =-1;
+    
+    for(int i=0; i<=n-1; i++){
+        if(dp[i]> ans){
+            ans = dp[i];
+            lastIndex = i;
+        }
+    }
+    
+    vector<int> temp;
+    temp.push_back(arr[lastIndex]);
+    
+    while(hash[lastIndex] != lastIndex){ // till not reach the initialization value
+        lastIndex = hash[lastIndex];
+        temp.push_back(arr[lastIndex]);    
+    }
+    
+    // reverse the array 
+    reverse(temp.begin(),temp.end());
+
+    
+    return temp;
+}
+
+
+longest string chain
+
+bool compare(string& s1, string& s2){
+    if(s1.size() != s2.size() + 1) return false;
+    
+    int first = 0;
+    int second = 0;
+    
+    while(first < s1.size()){
+        if(second < s2.size() && s1[first] == s2[second]){
+            first ++;
+            second ++;
+        }
+        else first ++;
+    }
+    if(first == s1.size() && second == s2.size()) return true;
+    else return false; 
+}
+
+bool comp(string& s1, string& s2){
+    return s1.size() < s2.size();
+}
+
+
+int longestStrChain(vector<string>& arr){
+
+    int n = arr.size();
+    
+    //sort the array
+    
+    sort(arr.begin(), arr.end(),comp);
+
+    vector<int> dp(n,1);
+    
+    int maxi = 1;
+    
+    for(int i=0; i<=n-1; i++){
+        
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            
+            if( compare(arr[i], arr[prev_index]) && 1 + dp[prev_index] > dp[i]){
+                dp[i] = 1 + dp[prev_index];
+            }
+        }
+        
+        if(dp[i] > maxi)
+            maxi = dp[i];
+    }
+    return maxi;
+}
+
+longest bitonic subsequence
+
+
+int longestBitonicSequence(vector<int>& arr, int n){
+    
+    vector<int> dp1(n,1);
+    vector<int> dp2(n,1);
+    
+    for(int i=0; i<=n-1; i++){
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            
+            if(arr[prev_index]<arr[i]){
+                dp1[i] = max(dp1[i], 1 + dp1[prev_index]);
+            }
+        }
+    }
+    
+    // reverse the direction of nested loops
+    for(int i=n-1; i>=0; i--){
+        for(int prev_index = n-1; prev_index >i; prev_index --){
+            
+            if(arr[prev_index]<arr[i]){
+                dp2[i] = max(dp2[i], 1 + dp2[prev_index]);
+            }
+        }
+    }
+    
+    int maxi = -1;
+    
+    for(int i=0; i<n; i++){
+        maxi = max(maxi, dp1[i] + dp2[i] - 1);
+    }
+    
+    return maxi;
+    
+}
 
 
 
