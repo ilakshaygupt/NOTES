@@ -3794,5 +3794,567 @@ int findNumberOfLIS(vector<int>& arr){
     return nos;
 }
 
+MATRIX CHAIN MULTIPLICATION
 
+recursion
+
+int f(vector<int>& arr, int i, int j){
+    
+    // base condition
+    if(i == j)
+        return 0;
+        
+    int mini = INT_MAX;
+    
+    // partioning loop
+    for(int k = i; k<= j-1; k++){
+        
+        int ans = f(arr,i,k) + f(arr, k+1,j) + arr[i-1]*arr[k]*arr[j];
+        
+        mini = min(mini,ans);
+        
+    }
+    
+    return mini;
+}
+
+
+int matrixMultiplication(vector<int>& arr, int N){
+    
+    int i =1;
+    int j = N-1;
+    
+    
+    return f(arr,i,j);
+    
+    
+}
+
+MEMOIZATION
+
+int f(vector<int>& arr, int i, int j, vector<vector<int>>& dp){
+    
+    // base condition
+    if(i == j)
+        return 0;
+        
+    if(dp[i][j]!=-1)
+        return dp[i][j];
+    
+    int mini = INT_MAX;
+    
+    // partioning loop
+    for(int k = i; k<= j-1; k++){
+        
+        int ans = f(arr,i,k,dp) + f(arr, k+1,j,dp) + arr[i-1]*arr[k]*arr[j];
+        
+        mini = min(mini,ans);
+        
+    }
+    
+    return mini;
+}
+
+
+int matrixMultiplication(vector<int>& arr, int N){
+    
+    vector<vector<int>> dp(N,vector<int>(N,-1));
+    
+    int i =1;
+    int j = N-1;
+    
+    
+    return f(arr,i,j,dp);
+    
+    
+}
+tabulation
+
+int matrixMultiplication(vector<int>& arr, int N){
+    
+    vector<vector<int>> dp(N,vector<int>(N,-1));
+    
+    for(int i=1; i<N; i++){
+        dp[i][i] = 0;
+    }
+    
+    for(int i=N-1; i>=1; i--){
+        
+        for(int j=i+1; j<N; j++){
+            
+            int mini = INT_MAX;
+    
+            // partioning loop
+            for(int k = i; k<= j-1; k++){
+                
+                int ans = dp[i][k]+ dp[k+1][j] + arr[i-1]*arr[k]*arr[j];
+                
+                mini = min(mini,ans);
+                
+            }
+            
+            dp[i][j] = mini;
+    
+        }
+    }
+    
+    return dp[1][N-1];
+    
+    
+}
+MINIMUM COST TO CUT THE STICK /CHOCOLATE
+RECURSIVE SOLUTON
+
+int f(int i, int j, vector<int> &cuts){
+    
+    // base case
+    if(i>j)
+        return 0;
+    
+    int mini = INT_MAX;
+    
+    for(int ind=i; ind<=j; ind++){
+        
+        int ans = cuts[j+1] - cuts[i-1] +
+                    f(i,ind-1,cuts) +
+                    f(ind+1,j,cuts);
+        
+        mini = min(mini, ans);
+        
+    }
+    
+    return mini;
+}
+
+
+int cost(int n, int c, vector<int> &cuts){
+    
+    // modify the cuts array
+    
+    cuts.push_back(n);
+    cuts.insert(cuts.begin(),0);
+    sort(cuts.begin(),cuts.end());
+    
+    return f(1,c,cuts);
+}
+
+MEMEOIZATION
+
+int f(int i, int j, vector<int> &cuts,  vector<vector<int>> &dp){
+    
+    // base case
+    if(i>j)
+        return 0;
+        
+    if(dp[i][j]!=-1)
+        return dp[i][j];
+    
+    int mini = INT_MAX;
+    
+    for(int ind=i; ind<=j; ind++){
+        
+        int ans = cuts[j+1] - cuts[i-1] +
+                    f(i,ind-1,cuts,dp) +
+                    f(ind+1,j,cuts,dp);
+        
+        mini = min(mini, ans);
+        
+    }
+    
+    return dp[i][j] = mini;
+}
+tabulation
+
+int cost(int n, int c, vector<int> &cuts){
+    
+    cuts.push_back(n);
+    cuts.insert(cuts.begin(),0);
+    sort(cuts.begin(),cuts.end());
+    
+    vector<vector<int>> dp(c+2,vector<int>(c+2,0));
+    
+    for(int i=c; i>=1; i--){
+        for(int j=1; j<=c; j++){
+            
+            if(i>j) continue;
+            
+            int mini = INT_MAX;
+    
+            for(int ind=i; ind<=j; ind++){
+        
+                int ans = cuts[j+1] - cuts[i-1] + dp[i][ind-1] + dp[ind+1][j];
+        
+                mini = min(mini, ans);
+        
+            }
+    
+            dp[i][j] = mini;
+        }
+    }
+    
+    return dp[1][c];
+
+}
+BURST BALLONS
+int f(int i, int j, vector<int> &a) {
+    if (i > j) return 0;
+    int maxi = INT_MIN;
+    for (int ind = i; ind <= j; ind++) {
+        int cost = a[i - 1] * a[ind] * a[j + 1] +
+                   f(i, ind - 1, a) + f(ind + 1, j, a);
+        maxi = max(maxi, cost);
+    }
+    return maxi;
+}
+
+int maxCoins(vector<int> &a) {
+    int n = a.size();
+    a.push_back(1);
+    a.insert(a.begin(), 1);
+    return f(1, n, a);
+}
+
+
+
+memoization
+
+int f(int i, int j, vector<int> &a, vector<vector<int>> &dp) {
+    if (i > j) return 0;
+    if (dp[i][j] != -1) return dp[i][j];
+    int maxi = INT_MIN;
+    for (int ind = i; ind <= j; ind++) {
+        int cost = a[i - 1] * a[ind] * a[j + 1] +
+                   f(i, ind - 1, a, dp) + f(ind + 1, j, a, dp);
+        maxi = max(maxi, cost);
+    }
+    return dp[i][j] = maxi;
+}
+
+int maxCoins(vector<int> &a) {
+    int n = a.size();
+    a.push_back(1);
+    a.insert(a.begin(), 1);
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+    return f(1, n, a, dp);
+}
+
+tabulation
+
+int maxCoins(vector<int> &a) {
+    int n = a.size();
+    a.push_back(1);
+    a.insert(a.begin(), 1);
+    vector<vector<int>> dp(n + 2, vector<int>(n + 2, 0));
+
+    for (int i = n; i >= 1; i--) {
+        for (int j = 1; j <= n; j++) {
+            if (i > j) continue;
+            int maxi = INT_MIN;
+            for (int ind = i; ind <= j; ind++) {
+                int cost = a[i - 1] * a[ind] * a[j + 1] +
+                           dp[i][ind - 1] + dp[ind + 1][j];
+                maxi = max(maxi, cost);
+            }
+            dp[i][j] = maxi;
+        }
+    }
+    return dp[1][n];
+}
+
+EVALUATE BOOLEAN EXPRESSION
+RECURSIVE
+
+#define ll long long
+int mod = 1000000007;
+
+int f(int i, int j, int isTrue, string &exp) {
+    //Base case 1:
+    if (i > j) return 0;
+    //Base case 2:
+    if (i == j) {
+        if (isTrue == 1) return exp[i] == 'T';
+        else return exp[i] == 'F';
+    }
+    ll ways = 0;
+    for (int ind = i + 1; ind <= j - 1; ind += 2) {
+        ll lT = f(i, ind - 1, 1, exp);
+        ll lF = f(i, ind - 1, 0, exp);
+        ll rT = f(ind + 1, j, 1, exp);
+        ll rF = f(ind + 1, j, 0, exp);
+
+        if (exp[ind] == '&') {
+            if (isTrue) ways = (ways + (lT * rT) % mod) % mod;
+            else ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lF * rF) % mod) % mod;
+        }
+        else if (exp[ind] == '|') {
+            if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lT * rT) % mod) % mod;
+            else ways = (ways + (lF * rF) % mod) % mod;
+        }
+        else {
+            if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod) % mod;
+            else ways = (ways + (lF * rF) % mod + (lT * rT) % mod) % mod;
+        }
+    }
+    return ways;
+}
+int evaluateExp(string & exp) {
+    // Write your code here.
+    int n = exp.size();
+    return f(0, n - 1, 1, exp);
+}
+MEMOIZATION
+
+#define ll long long
+int mod = 1000000007;
+
+int f(int i, int j, int isTrue, string &exp, vector<vector<vector<ll>>> &dp) {
+    //Base case 1:
+    if (i > j) return 0;
+    //Base case 2:
+    if (i == j) {
+        if (isTrue == 1) return exp[i] == 'T';
+        else return exp[i] == 'F';
+    }
+
+    if (dp[i][j][isTrue] != -1) return dp[i][j][isTrue];
+    ll ways = 0;
+    for (int ind = i + 1; ind <= j - 1; ind += 2) {
+        ll lT = f(i, ind - 1, 1, exp, dp);
+        ll lF = f(i, ind - 1, 0, exp, dp);
+        ll rT = f(ind + 1, j, 1, exp, dp);
+        ll rF = f(ind + 1, j, 0, exp, dp);
+
+        if (exp[ind] == '&') {
+            if (isTrue) ways = (ways + (lT * rT) % mod) % mod;
+            else ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lF * rF) % mod) % mod;
+        }
+        else if (exp[ind] == '|') {
+            if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lT * rT) % mod) % mod;
+            else ways = (ways + (lF * rF) % mod) % mod;
+        }
+        else {
+            if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod) % mod;
+            else ways = (ways + (lF * rF) % mod + (lT * rT) % mod) % mod;
+        }
+    }
+    return dp[i][j][isTrue] = ways;
+}
+int evaluateExp(string & exp) {
+    // Write your code here.
+    int n = exp.size();
+    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(n, vector<ll>(2, -1)));
+    return f(0, n - 1, 1, exp, dp);
+}
+
+tabulation
+
+int evaluateExp(string & exp) {
+    // Write your code here.
+    int n = exp.size();
+    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(n, vector<ll>(2, 0)));
+    for (int i = n - 1; i >= 0; i--) {
+        for (int j = 0; j <= n - 1; j++) {
+            //Base case 1:
+            if (i > j) continue;
+            for (int isTrue = 0; isTrue <= 1; isTrue++) {
+                // Base case 2:
+                if (i == j) {
+                    if (isTrue == 1) dp[i][j][isTrue] = exp[i] == 'T';
+                    else dp[i][j][isTrue] = exp[i] == 'F';
+                    continue;
+                }
+
+                // reccurence logic:
+                ll ways = 0;
+                for (int ind = i + 1; ind <= j - 1; ind += 2) {
+                    ll lT = dp[i][ind - 1][1];
+                    ll lF = dp[i][ind - 1][0];
+                    ll rT = dp[ind + 1][j][1];
+                    ll rF = dp[ind + 1][j][0];
+
+                    if (exp[ind] == '&') {
+                        if (isTrue) ways = (ways + (lT * rT) % mod) % mod;
+                        else ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lF * rF) %
+                         mod) % mod;
+                    }
+                    else if (exp[ind] == '|') {
+                        if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod + (lT *
+                        rT) % mod) % mod;
+                        else ways = (ways + (lF * rF) % mod) % mod;
+                    }
+                    else {
+                        if (isTrue) ways = (ways + (lF * rT) % mod + (lT * rF) % mod) % mod;
+                        else ways = (ways + (lF * rF) % mod + (lT * rT) % mod) % mod;
+                    }
+                }
+                dp[i][j][isTrue] = ways;
+            }
+        }
+    }
+    return dp[0][n - 1][1];
+}
+
+palindrome partitioning
+
+RECURSIVE
+bool isPalindrome(int i, int j, string &s) {
+    while (i < j) {
+        if (s[i] != s[j]) return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+int f(int i, int n, string &str) {
+    //Base case:
+    if (i == n) return 0;
+
+    int minCost = INT_MAX;
+    //string[i...j]
+    for (int j = i; j < n; j++) {
+        if (isPalindrome(i, j, str)) {
+            int cost = 1 + f(j + 1, n, str);
+            minCost = min(minCost, cost);
+        }
+    }
+    return minCost;
+}
+int palindromePartitioning(string str) {
+    // Write your code here
+    int n = str.size();
+    return f(0, n, str) - 1;
+}
+
+memoization
+
+bool isPalindrome(int i, int j, string &s) {
+    while (i < j) {
+        if (s[i] != s[j]) return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+int f(int i, int n, string &str, vector<int> &dp) {
+    //Base case:
+    if (i == n) return 0;
+
+    if (dp[i] != -1) return dp[i];
+    int minCost = INT_MAX;
+    //string[i...j]
+    for (int j = i; j < n; j++) {
+        if (isPalindrome(i, j, str)) {
+            int cost = 1 + f(j + 1, n, str, dp);
+            minCost = min(minCost, cost);
+        }
+    }
+    return dp[i] = minCost;
+}
+int palindromePartitioning(string str) {
+    // Write your code here
+    int n = str.size();
+    vector<int> dp(n, -1);
+    return f(0, n, str, dp) - 1;
+}
+
+
+tabulation
+
+bool isPalindrome(int i, int j, string &s) {
+    while (i < j) {
+        if (s[i] != s[j]) return false;
+        i++;
+        j--;
+    }
+    return true;
+}
+
+int palindromePartitioning(string str) {
+    // Write your code here
+    int n = str.size();
+    vector<int> dp(n + 1, 0);
+    dp[n] = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        int minCost = INT_MAX;
+        //string[i...j]
+        for (int j = i; j < n; j++) {
+            if (isPalindrome(i, j, str)) {
+                int cost = 1 + dp[j + 1];
+                minCost = min(minCost, cost);
+            }
+        }
+        dp[i] = minCost;
+    }
+    return dp[0] - 1;
+}
+
+
+partition array for maximum sum
+ 
+
+int f(int ind, vector<int> &num, int k) {
+    int n = num.size();
+    //base case:
+    if (ind == n) return 0;
+
+    int len = 0;
+    int maxi = INT_MIN;
+    int maxAns = INT_MIN;
+    for (int j = ind; j < min(ind + k, n); j++) {
+        len++;
+        maxi = max(maxi, num[j]);
+        int sum = len * maxi + f(j + 1, num, k);
+        maxAns = max(maxAns, sum);
+    }
+    return maxAns;
+}
+int maxSumAfterPartitioning(vector<int>& num, int k) {
+
+    return f(0, num, k);
+}
+
+memoization
+
+int f(int ind, vector<int> &num, int k, vector<int> &dp) {
+    int n = num.size();
+    //base case:
+    if (ind == n) return 0;
+
+    if (dp[ind] != -1) return dp[ind];
+    int len = 0;
+    int maxi = INT_MIN;
+    int maxAns = INT_MIN;
+    for (int j = ind; j < min(ind + k, n); j++) {
+        len++;
+        maxi = max(maxi, num[j]);
+        int sum = len * maxi + f(j + 1, num, k, dp);
+        maxAns = max(maxAns, sum);
+    }
+    return dp[ind] = maxAns;
+}
+int maxSumAfterPartitioning(vector<int>& num, int k) {
+    int n = num.size();
+    vector<int> dp(n, -1);
+    return f(0, num, k, dp);
+}
+
+
+
+int maxSumAfterPartitioning(vector<int>& num, int k) {
+    int n = num.size();
+    vector<int> dp(n + 1, 0);
+    for (int ind = n - 1; ind >= 0; ind--) {
+        int len = 0;
+        int maxi = INT_MIN;
+        int maxAns = INT_MIN;
+        for (int j = ind; j < min(ind + k, n); j++) {
+            len++;
+            maxi = max(maxi, num[j]);
+            int sum = len * maxi + dp[j + 1];
+            maxAns = max(maxAns, sum);
+        }
+        dp[ind] = maxAns;
+    }
+    return dp[0];
+}
 
